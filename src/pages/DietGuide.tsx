@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -54,6 +54,13 @@ const DietGuide = () => {
   const [preferences, setPreferences] = useState("");
   const [loading, setLoading] = useState(false);
   const [guide, setGuide] = useState<any>(null);
+  const guideResultsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (guide && guideResultsRef.current) {
+      guideResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [guide]);
 
   const getGuide = async () => {
     if (!preferences.trim()) {
@@ -85,12 +92,11 @@ const DietGuide = () => {
   const handleLearnMore = (dietName: string) => {
     const prompt = `Tell me everything I'd need to know about the ${dietName}. Also give me any tips or advice you think is relevant.`;
     setPreferences(prompt);
-    // Scroll to top to show the filled textarea
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    // Trigger the guide generation after a brief delay to show the filled text
+    setGuide(null); // Clear previous guide
+    // Trigger the guide generation immediately
     setTimeout(() => {
       getGuide();
-    }, 500);
+    }, 100);
   };
 
   return (
@@ -171,7 +177,7 @@ const DietGuide = () => {
 
         {/* Guide Results */}
         {guide && (
-          <Card className="p-5 md:p-6 mb-6 md:mb-8">
+          <Card ref={guideResultsRef} className="p-5 md:p-6 mb-6 md:mb-8 scroll-mt-4">
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{guide.title}</h2>
             
             {guide.overview && (
