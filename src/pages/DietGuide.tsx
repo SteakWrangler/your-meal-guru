@@ -2,11 +2,52 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Apple, Loader2 } from "lucide-react";
+import { ArrowLeft, Apple, Loader2, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatSection } from "@/components/ChatSection";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+
+const commonDiets = [
+  {
+    name: "Mediterranean Diet",
+    description: "A heart-healthy eating plan based on traditional foods from countries bordering the Mediterranean Sea. Emphasizes fruits, vegetables, whole grains, fish, and healthy fats like olive oil.",
+  },
+  {
+    name: "Ketogenic (Keto) Diet",
+    description: "A very low-carb, high-fat diet that puts your body into a metabolic state called ketosis. Focuses on foods like meat, fish, eggs, nuts, and healthy oils while limiting carbs.",
+  },
+  {
+    name: "Paleo Diet",
+    description: "Based on foods similar to what might have been eaten during the Paleolithic era. Includes lean meats, fish, fruits, vegetables, nuts, and seeds while excluding processed foods, grains, and dairy.",
+  },
+  {
+    name: "Intermittent Fasting",
+    description: "An eating pattern that cycles between periods of fasting and eating. Common methods include 16:8 (16 hours fasting, 8 hours eating) or 5:2 (eating normally 5 days, restricting calories 2 days).",
+  },
+  {
+    name: "Plant-Based/Vegan Diet",
+    description: "Focuses on foods derived from plants, including vegetables, fruits, nuts, seeds, oils, whole grains, legumes, and beans. Excludes all animal products including meat, dairy, and eggs.",
+  },
+  {
+    name: "DASH Diet",
+    description: "Dietary Approaches to Stop Hypertension - designed to prevent and lower high blood pressure. Emphasizes vegetables, fruits, whole grains, lean proteins, and low-fat dairy while reducing sodium.",
+  },
+  {
+    name: "Low-FODMAP Diet",
+    description: "Reduces fermentable carbohydrates that can cause digestive issues. Often used to manage IBS symptoms by eliminating then gradually reintroducing certain foods.",
+  },
+  {
+    name: "Flexitarian Diet",
+    description: "A flexible vegetarian approach that emphasizes plant-based foods while allowing meat and animal products in moderation. Good for those wanting to reduce meat consumption without going fully vegetarian.",
+  },
+];
 
 const DietGuide = () => {
   const navigate = useNavigate();
@@ -39,6 +80,17 @@ const DietGuide = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleLearnMore = (dietName: string) => {
+    const prompt = `Tell me everything I'd need to know about the ${dietName}. Also give me any tips or advice you think is relevant.`;
+    setPreferences(prompt);
+    // Scroll to top to show the filled textarea
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Trigger the guide generation after a brief delay to show the filled text
+    setTimeout(() => {
+      getGuide();
+    }, 500);
   };
 
   return (
@@ -86,6 +138,35 @@ const DietGuide = () => {
               "Get Personalized Guide"
             )}
           </Button>
+        </Card>
+
+        {/* Common Diets Section */}
+        <Card className="p-5 md:p-6 mb-6 md:mb-8">
+          <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">
+            Explore Common Diets
+          </h2>
+          <Accordion type="single" collapsible className="w-full">
+            {commonDiets.map((diet, index) => (
+              <AccordionItem key={index} value={`diet-${index}`}>
+                <AccordionTrigger className="text-left hover:no-underline">
+                  <span className="font-medium">{diet.name}</span>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <p className="text-sm md:text-base text-muted-foreground mb-4">
+                    {diet.description}
+                  </p>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleLearnMore(diet.name)}
+                    disabled={loading}
+                  >
+                    Learn More
+                  </Button>
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </Card>
 
         {/* Guide Results */}
