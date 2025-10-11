@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      meal_suggestions: {
+        Row: {
+          created_at: string | null
+          id: string
+          suggestion: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          suggestion: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          suggestion?: string
+        }
+        Relationships: []
+      }
+      recipes: {
+        Row: {
+          created_at: string | null
+          dish_name: string
+          id: string
+          ingredients: string[]
+          steps: string[]
+          tips: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string | null
+          dish_name: string
+          id?: string
+          ingredients: string[]
+          steps: string[]
+          tips?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string | null
+          dish_name?: string
+          id?: string
+          ingredients?: string[]
+          steps?: string[]
+          tips?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
