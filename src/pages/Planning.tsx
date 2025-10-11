@@ -1,17 +1,70 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Calendar, Plus } from "lucide-react";
+import { ArrowLeft, Calendar, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+
+interface MealPlan {
+  [day: string]: {
+    breakfast: string;
+    lunch: string;
+    dinner: string;
+  };
+}
 
 const Planning = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [preferences, setPreferences] = useState("");
+  const [numberOfPeople, setNumberOfPeople] = useState("2");
+  const [dietaryRestrictions, setDietaryRestrictions] = useState("");
+  const [mealPlan, setMealPlan] = useState<MealPlan | null>(null);
 
   const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-  const handleAddMeal = (day: string) => {
-    toast.info("Meal planning feature coming soon!");
+  const generateMealPlan = async () => {
+    if (!preferences.trim()) {
+      toast.error("Please provide some preferences or goals");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("meal-suggestions", {
+        body: { 
+          type: "meal-plan",
+          preferences,
+          numberOfPeople: parseInt(numberOfPeople),
+          dietaryRestrictions
+        },
+      });
+
+      if (error) {
+        console.error("Error generating meal plan:", error);
+        toast.error("Failed to generate meal plan. Please check your API configuration.");
+        return;
+      }
+
+      if (data?.mealPlan) {
+        setMealPlan(data.mealPlan);
+        toast.success("Meal plan generated!");
+      } else {
+        toast.error("No meal plan returned. Please try again.");
+      }
+    } catch (error: any) {
+      console.error("Error calling meal plan function:", error);
+      toast.error("Failed to connect to the meal planning service.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMealClick = (meal: string) => {
+    navigate("/instructions", { state: { dishName: meal } });
   };
 
   return (
@@ -33,58 +86,132 @@ const Planning = () => {
           </div>
         </div>
 
+        {/* Input Form */}
+        {!mealPlan && (
+          <Card className="p-8 mb-8">
+            <Sparkles className="w-12 h-12 mx-auto mb-4 text-primary" />
+            <h2 className="text-2xl font-semibold mb-2 text-center">AI Meal Prep Assistant</h2>
+            <p className="text-muted-foreground mb-6 text-center">
+              Tell us your preferences and we'll create a personalized weekly meal plan
+            </p>
+            
+            <div className="space-y-4 max-w-2xl mx-auto">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Number of People
+                </label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={numberOfPeople}
+                  onChange={(e) => setNumberOfPeople(e.target.value)}
+                  placeholder="2"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Dietary Restrictions (Optional)
+                </label>
+                <Input
+                  value={dietaryRestrictions}
+                  onChange={(e) => setDietaryRestrictions(e.target.value)}
+                  placeholder="e.g., vegetarian, gluten-free, no dairy"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Goals & Preferences
+                </label>
+                <Textarea
+                  value={preferences}
+                  onChange={(e) => setPreferences(e.target.value)}
+                  placeholder="e.g., healthy meals, quick recipes, budget-friendly, high protein, meal variety..."
+                  className="min-h-[100px]"
+                />
+              </div>
+
+              <Button 
+                onClick={generateMealPlan} 
+                disabled={loading}
+                className="w-full"
+                size="lg"
+              >
+                {loading ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Generating Your Meal Plan...
+                  </>
+                ) : (
+                  <>
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Generate Weekly Meal Plan
+                  </>
+                )}
+              </Button>
+            </div>
+          </Card>
+        )}
+
         {/* Weekly Planner */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {daysOfWeek.map((day) => (
-            <Card key={day} className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold">{day}</h3>
-                <Calendar className="w-5 h-5 text-muted-foreground" />
-              </div>
-              
-              <div className="space-y-3">
-                <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-sm font-medium text-muted-foreground">Breakfast</p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full mt-2 text-left justify-start"
-                    onClick={() => handleAddMeal(day)}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add meal
-                  </Button>
-                </div>
+        {mealPlan && (
+          <>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Your Weekly Meal Plan</h2>
+              <Button 
+                variant="outline" 
+                onClick={() => setMealPlan(null)}
+              >
+                Create New Plan
+              </Button>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {daysOfWeek.map((day) => (
+                <Card key={day} className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">{day}</h3>
+                    <Calendar className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  
+                  {mealPlan[day] && (
+                    <div className="space-y-3">
+                      <div className="p-3 bg-muted rounded-lg">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Breakfast</p>
+                        <p 
+                          className="text-sm cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => handleMealClick(mealPlan[day].breakfast)}
+                        >
+                          {mealPlan[day].breakfast}
+                        </p>
+                      </div>
 
-                <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-sm font-medium text-muted-foreground">Lunch</p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full mt-2 text-left justify-start"
-                    onClick={() => handleAddMeal(day)}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add meal
-                  </Button>
-                </div>
+                      <div className="p-3 bg-muted rounded-lg">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Lunch</p>
+                        <p 
+                          className="text-sm cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => handleMealClick(mealPlan[day].lunch)}
+                        >
+                          {mealPlan[day].lunch}
+                        </p>
+                      </div>
 
-                <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-sm font-medium text-muted-foreground">Dinner</p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="w-full mt-2 text-left justify-start"
-                    onClick={() => handleAddMeal(day)}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add meal
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
+                      <div className="p-3 bg-muted rounded-lg">
+                        <p className="text-sm font-medium text-muted-foreground mb-1">Dinner</p>
+                        <p 
+                          className="text-sm cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => handleMealClick(mealPlan[day].dinner)}
+                        >
+                          {mealPlan[day].dinner}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

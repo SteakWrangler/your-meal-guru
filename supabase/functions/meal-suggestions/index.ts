@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName, image } = await req.json();
+    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -216,6 +216,64 @@ serve(async (req) => {
           JSON.stringify({ recipe }),
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
+      }
+    } else if (type === 'meal-plan') {
+      console.log('Generating meal plan');
+      
+      const prompt = `Create a weekly meal plan (Monday-Sunday) for ${numberOfPeople} people.
+${dietaryRestrictions ? `Dietary restrictions: ${dietaryRestrictions}` : ''}
+Preferences and goals: ${preferences}
+
+Format your response as JSON with this structure:
+{
+  "Monday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" },
+  "Tuesday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" },
+  "Wednesday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" },
+  "Thursday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" },
+  "Friday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" },
+  "Saturday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" },
+  "Sunday": { "breakfast": "dish name", "lunch": "dish name", "dinner": "dish name" }
+}`;
+
+      const systemPrompt = 'You are a professional meal planner creating balanced, varied meal plans. Always respond with valid JSON only.';
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        throw new Error(`AI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let content = data.choices[0].message.content;
+
+      // Strip markdown code blocks if present
+      content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+      try {
+        const mealPlan = JSON.parse(content);
+        
+        return new Response(
+          JSON.stringify({ mealPlan }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (e) {
+        console.error('Failed to parse meal plan JSON:', e);
+        throw new Error('Failed to generate valid meal plan');
       }
     }
 
