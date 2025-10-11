@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions } = await req.json();
+    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -275,6 +275,41 @@ Format your response as JSON with this structure:
         console.error('Failed to parse meal plan JSON:', e);
         throw new Error('Failed to generate valid meal plan');
       }
+    } else if (type === 'chat') {
+      console.log('Processing chat message');
+      
+      const contextInfo = context ? `\n\nCurrent context: ${JSON.stringify(context)}` : '';
+      const messages = [
+        { role: 'system', content: systemPrompt + contextInfo },
+        ...(history || []),
+        { role: 'user', content: message }
+      ];
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        throw new Error(`AI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const responseContent = data.choices[0].message.content;
+
+      return new Response(
+        JSON.stringify({ response: responseContent }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     throw new Error('Invalid request type');

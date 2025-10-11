@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ChatSection } from "@/components/ChatSection";
 
 const Suggestions = () => {
   const navigate = useNavigate();
@@ -117,6 +118,14 @@ const Suggestions = () => {
               ))}
             </div>
           </div>
+        )}
+
+        {suggestions.length > 0 && (
+          <ChatSection
+            context={{ suggestions }}
+            systemPrompt="You are a helpful cooking assistant. Help users understand these meal suggestions, provide variations, explain cooking techniques, and suggest modifications based on preferences."
+            placeholder="Ask about these suggestions..."
+          />
         )}
       </div>
     </div>

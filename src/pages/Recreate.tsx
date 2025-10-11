@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Target, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { ChatSection } from "@/components/ChatSection";
 
 const Recreate = () => {
   const navigate = useNavigate();
@@ -114,6 +115,14 @@ const Recreate = () => {
             </p>
           </div>
         </Card>
+
+        {(dish || style) && (
+          <ChatSection
+            context={{ dish, style }}
+            systemPrompt="You are a helpful cooking assistant specializing in recreating restaurant dishes. Help users understand techniques, suggest ingredient substitutions, and provide tips for achieving restaurant-quality results at home."
+            placeholder="Ask about recreating this dish..."
+          />
+        )}
       </div>
     </div>
   );

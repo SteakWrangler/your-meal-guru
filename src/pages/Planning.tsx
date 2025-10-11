@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Calendar, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { ChatSection } from "@/components/ChatSection";
 
 interface MealPlan {
   [day: string]: {
@@ -211,6 +212,14 @@ const Planning = () => {
               ))}
             </div>
           </>
+        )}
+
+        {mealPlan && (
+          <ChatSection
+            context={{ mealPlan, preferences, numberOfPeople, dietaryRestrictions }}
+            systemPrompt="You are a helpful meal planning assistant. Help users modify their meal plan, suggest alternatives, provide shopping lists, and answer questions about their weekly plan."
+            placeholder="Ask about your meal plan..."
+          />
         )}
       </div>
     </div>

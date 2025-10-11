@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Loader2, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { ChatSection } from "@/components/ChatSection";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -147,6 +148,14 @@ const Instructions = () => {
               </div>
             )}
           </Card>
+        )}
+
+        {recipe && (
+          <ChatSection
+            context={recipe}
+            systemPrompt="You are a helpful cooking assistant. Help users understand the recipe they're viewing, clarify steps, suggest substitutions, and answer cooking questions."
+            placeholder="Ask about this recipe..."
+          />
         )}
       </div>
     </div>
