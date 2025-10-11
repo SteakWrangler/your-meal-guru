@@ -141,10 +141,40 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } else if (type === 'recipe') {
-      // Note: Skipping cache for now since we changed the recipe format
-      // Old cached recipes won't match the new dual-version structure
+      // Check database first for cached recipe
+      console.log(`Checking database for recipe: ${dishName}`);
+      const { data: cachedRecipe, error: fetchError } = await supabase
+        .from('recipes')
+        .select('*')
+        .ilike('dish_name', dishName)
+        .single();
+
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error('Error fetching recipe:', fetchError);
+      }
+
+      if (cachedRecipe) {
+        console.log('Returning cached recipe from database');
+        const recipe = {
+          title: cachedRecipe.title,
+          standard: {
+            ingredients: cachedRecipe.standard_ingredients,
+            steps: cachedRecipe.standard_steps,
+            tips: cachedRecipe.standard_tips || ''
+          },
+          fromScratch: {
+            ingredients: cachedRecipe.scratch_ingredients,
+            steps: cachedRecipe.scratch_steps,
+            tips: cachedRecipe.scratch_tips || ''
+          }
+        };
+        return new Response(
+          JSON.stringify({ recipe }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       
-      // Generate new recipe
+      // Generate new recipe with AI
       console.log('Generating new recipe with AI');
       const prompt = `Provide two versions of a recipe for ${dishName}. Format your response as JSON with this structure:
 {
@@ -195,8 +225,27 @@ The from-scratch version should show how to make everything from scratch with fr
       try {
         const recipe = JSON.parse(content);
         
-        // Note: Not caching dual-version recipes to keep cache simple
-        // Can be added later if needed
+        // Save the generated recipe to database for reuse
+        console.log('Saving recipe to database');
+        const { error: insertError } = await supabase
+          .from('recipes')
+          .insert({
+            dish_name: dishName,
+            title: recipe.title,
+            standard_ingredients: recipe.standard.ingredients,
+            standard_steps: recipe.standard.steps,
+            standard_tips: recipe.standard.tips || null,
+            scratch_ingredients: recipe.fromScratch.ingredients,
+            scratch_steps: recipe.fromScratch.steps,
+            scratch_tips: recipe.fromScratch.tips || null
+          });
+
+        if (insertError) {
+          console.error('Error saving recipe:', insertError);
+          // Don't fail the request if save fails, just log it
+        } else {
+          console.log('Recipe saved successfully');
+        }
 
         return new Response(
           JSON.stringify({ recipe }),
