@@ -1,15 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 const Suggestions = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Check if suggestions were passed from Ingredients page
+    if (location.state?.suggestions) {
+      setSuggestions(location.state.suggestions);
+    }
+  }, [location.state]);
 
   const getSuggestions = async () => {
     setLoading(true);
@@ -18,14 +26,20 @@ const Suggestions = () => {
         body: { type: "suggest" },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error getting suggestions:", error);
+        toast.error("Failed to get meal suggestions. Please check your API configuration.");
+        return;
+      }
 
       if (data?.suggestions) {
         setSuggestions(data.suggestions);
+      } else {
+        toast.error("No suggestions returned. Please try again.");
       }
     } catch (error: any) {
-      console.error("Error getting suggestions:", error);
-      toast.error("Failed to get meal suggestions. Please try again.");
+      console.error("Error calling meal suggestions:", error);
+      toast.error("Failed to connect to the meal suggestions service.");
     } finally {
       setLoading(false);
     }

@@ -15,9 +15,16 @@ const Instructions = () => {
   const [recipe, setRecipe] = useState<any>(null);
 
   useEffect(() => {
+    // Check if a recipe was passed from Recreate page
+    if (location.state?.recipe) {
+      setRecipe(location.state.recipe);
+    }
     if (location.state?.dishName) {
       setDishName(location.state.dishName);
-      getRecipe(location.state.dishName);
+      // Only fetch if no recipe was provided
+      if (!location.state.recipe) {
+        getRecipe(location.state.dishName);
+      }
     }
   }, [location.state]);
 
@@ -37,14 +44,20 @@ const Instructions = () => {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Error getting recipe:", error);
+        toast.error("Failed to get recipe. Please check your API configuration.");
+        return;
+      }
 
       if (data?.recipe) {
         setRecipe(data.recipe);
+      } else {
+        toast.error("No recipe found. Please try again.");
       }
     } catch (error: any) {
-      console.error("Error getting recipe:", error);
-      toast.error("Failed to get recipe. Please try again.");
+      console.error("Error calling recipe function:", error);
+      toast.error("Failed to connect to the recipe service.");
     } finally {
       setLoading(false);
     }

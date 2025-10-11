@@ -60,12 +60,38 @@ const Ingredients = () => {
     }
   };
 
-  const handleAnalyze = () => {
+  const handleAnalyze = async () => {
     if (!ingredients.trim()) {
       toast.error("Please enter some ingredients");
       return;
     }
-    navigate('/suggestions', { state: { ingredients } });
+
+    setIsAnalyzing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('meal-suggestions', {
+        body: { 
+          type: 'suggest',
+          ingredients: ingredients.split(',').map(i => i.trim())
+        }
+      });
+
+      if (error) {
+        console.error('Error getting suggestions:', error);
+        toast.error("Failed to get meal suggestions. Please check your API configuration.");
+        return;
+      }
+
+      if (data?.suggestions) {
+        navigate('/suggestions', { state: { suggestions: data.suggestions, ingredients } });
+      } else {
+        toast.error("No suggestions returned. Please try again.");
+      }
+    } catch (error) {
+      console.error('Error calling meal suggestions:', error);
+      toast.error("Failed to connect to the meal suggestions service.");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   return (
@@ -129,8 +155,15 @@ const Ingredients = () => {
             onChange={(e) => setIngredients(e.target.value)}
             className="min-h-[150px] mb-4"
           />
-          <Button onClick={handleAnalyze} className="w-full">
-            Find Recipes
+          <Button onClick={handleAnalyze} className="w-full" disabled={isAnalyzing}>
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Getting Suggestions...
+              </>
+            ) : (
+              'Find Recipes'
+            )}
           </Button>
         </Card>
       </div>
