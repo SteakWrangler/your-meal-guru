@@ -20,11 +20,11 @@ const Suggestions = () => {
     }
   }, [location.state]);
 
-  const getSuggestions = async (forceRegenerate = false) => {
+  const getSuggestions = async () => {
     setLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke("meal-suggestions", {
-        body: { type: "suggest", forceRegenerate },
+        body: { type: "suggest", forceRegenerate: true },
       });
 
       if (error) {
@@ -35,9 +35,6 @@ const Suggestions = () => {
 
       if (data?.suggestions) {
         setSuggestions(data.suggestions);
-        if (forceRegenerate) {
-          toast.success("Generated fresh meal ideas!");
-        }
       } else {
         toast.error("No suggestions returned. Please try again.");
       }
@@ -79,41 +76,21 @@ const Suggestions = () => {
           <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
             Get personalized meal suggestions based on popular dishes and cooking trends
           </p>
-          <div className="flex gap-3 flex-col sm:flex-row">
-            <Button
-              onClick={() => getSuggestions(false)}
-              disabled={loading}
-              size="lg"
-              className="px-6 md:px-8 flex-1 sm:flex-initial"
-            >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Getting Ideas...
-                </>
-              ) : (
-                "Get Meal Ideas"
-              )}
-            </Button>
-            {suggestions.length > 0 && (
-              <Button
-                onClick={() => getSuggestions(true)}
-                disabled={loading}
-                size="lg"
-                variant="outline"
-                className="px-6 md:px-8 flex-1 sm:flex-initial"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Regenerating...
-                  </>
-                ) : (
-                  "Regenerate Ideas"
-                )}
-              </Button>
+          <Button
+            onClick={getSuggestions}
+            disabled={loading}
+            size="lg"
+            className="px-6 md:px-8 w-full sm:w-auto"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                Getting Ideas...
+              </>
+            ) : (
+              "Get Meal Ideas"
             )}
-          </div>
+          </Button>
         </Card>
 
         {/* Suggestions */}
