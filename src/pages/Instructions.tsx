@@ -162,12 +162,25 @@ const Instructions = () => {
                   <div>
                     <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
                     <ul className="space-y-2">
-                      {recipe.fromScratch.ingredients.map((ingredient: string, index: number) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="text-primary mt-1">•</span>
-                          <span className="text-sm md:text-base">{ingredient}</span>
-                        </li>
-                      ))}
+                      {recipe.fromScratch.ingredients.map((ingredient: string, index: number) => {
+                        // Check if this is a subsection header (e.g., "For the pasta:", "For the sauce:")
+                        const isSubsection = /^(for the|for|to make)/i.test(ingredient.trim());
+                        
+                        if (isSubsection) {
+                          return (
+                            <li key={index} className="pt-3 first:pt-0">
+                              <h4 className="text-base md:text-lg font-bold text-primary mb-1">{ingredient}</h4>
+                            </li>
+                          );
+                        }
+                        
+                        return (
+                          <li key={index} className="flex items-start gap-2 ml-0">
+                            <span className="text-primary mt-1">•</span>
+                            <span className="text-sm md:text-base">{ingredient}</span>
+                          </li>
+                        );
+                      })}
                     </ul>
                   </div>
                 )}
@@ -176,14 +189,27 @@ const Instructions = () => {
                   <div>
                     <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
                     <ol className="space-y-3 md:space-y-4">
-                      {recipe.fromScratch.steps.map((step: string, index: number) => (
-                        <li key={index} className="flex gap-3 md:gap-4">
-                          <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
-                            {index + 1}
-                          </span>
-                          <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
-                        </li>
-                      ))}
+                      {recipe.fromScratch.steps.map((step: string, index: number) => {
+                        // Check if this is a subsection header
+                        const isSubsection = /^(for the|for|to make|making the)/i.test(step.trim());
+                        
+                        if (isSubsection) {
+                          return (
+                            <li key={index} className="pt-3 first:pt-0 list-none">
+                              <h4 className="text-base md:text-lg font-bold text-primary mb-2">{step}</h4>
+                            </li>
+                          );
+                        }
+                        
+                        return (
+                          <li key={index} className="flex gap-3 md:gap-4">
+                            <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
+                              {index + 1}
+                            </span>
+                            <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
+                          </li>
+                        );
+                      })}
                     </ol>
                   </div>
                 )}
