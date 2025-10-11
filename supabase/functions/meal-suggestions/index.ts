@@ -300,6 +300,84 @@ Format your response as JSON with this structure:
         JSON.stringify({ response: responseContent }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
+    } else if (type === 'diet-guide') {
+      console.log('Generating diet guide');
+      
+      const prompt = `Create a comprehensive diet guide based on the following goals and preferences: ${preferences}
+
+Provide detailed information including:
+1. An overview of how to achieve their goals
+2. Key recommendations for their dietary approach
+3. A sample daily meal plan with specific meal suggestions
+4. Additional tips for success
+
+Format your response as JSON with this structure:
+{
+  "title": "Personalized [Diet Type] Guide",
+  "overview": "Brief overview of the diet approach and how it helps achieve their goals (2-3 sentences)",
+  "recommendations": [
+    "Key recommendation 1 (be specific and actionable)",
+    "Key recommendation 2",
+    "Key recommendation 3",
+    "Key recommendation 4",
+    "Key recommendation 5"
+  ],
+  "mealPlan": {
+    "breakfast": "Specific breakfast example with portion guidance",
+    "lunch": "Specific lunch example with portion guidance",
+    "dinner": "Specific dinner example with portion guidance",
+    "snacks": "Healthy snack suggestions"
+  },
+  "tips": [
+    "Practical tip 1 for following this diet",
+    "Practical tip 2",
+    "Practical tip 3",
+    "Practical tip 4"
+  ]
+}
+
+Make the guide practical, specific, and tailored to their stated goals. Include portion guidance where relevant.`;
+
+      const systemPrompt = 'You are a professional nutritionist and dietitian providing evidence-based dietary guidance. Always respond with valid JSON only. Be specific, practical, and supportive in your recommendations.';
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ],
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        throw new Error(`AI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      let content = data.choices[0].message.content;
+
+      // Strip markdown code blocks if present
+      content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+
+      try {
+        const guide = JSON.parse(content);
+        
+        return new Response(
+          JSON.stringify(guide),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      } catch (e) {
+        console.error('Failed to parse diet guide JSON:', e);
+        throw new Error('Failed to generate valid diet guide');
+      }
     }
 
     throw new Error('Invalid request type');
