@@ -58,7 +58,9 @@ const DietGuide = () => {
 
   useEffect(() => {
     if (guide && guideResultsRef.current) {
-      guideResultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => {
+        guideResultsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
     }
   }, [guide]);
 
