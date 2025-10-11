@@ -90,15 +90,14 @@ const Ingredients = () => {
         {/* Photo Upload */}
         <Card className="p-8 text-center mb-6">
           <Camera className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-xl font-semibold mb-2">Take a Photo</h3>
+          <h3 className="text-xl font-semibold mb-2">Upload or Take a Photo</h3>
           <p className="text-muted-foreground mb-4">
-            Snap a picture of your fridge or pantry
+            Snap a picture or upload an image of your fridge or pantry
           </p>
           <input
             ref={fileInputRef}
             type="file"
             accept="image/*"
-            capture="environment"
             onChange={handlePhotoUpload}
             className="hidden"
           />
