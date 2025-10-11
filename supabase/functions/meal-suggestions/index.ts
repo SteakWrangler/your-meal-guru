@@ -191,9 +191,11 @@ serve(async (req) => {
   }
 }
 
+IMPORTANT: Both versions MUST yield the same portion size and number of servings. Adjust ingredient quantities so the finished dish amount is identical.
+
 The standard version should use convenient shortcuts like pre-made sauces, canned items, etc.
 The from-scratch version should show how to make everything from scratch with fresh ingredients.`;
-      const systemPrompt = 'You are a professional chef providing detailed recipes. Always respond with valid JSON only.';
+      const systemPrompt = 'You are a professional chef providing detailed recipes. Always respond with valid JSON only. Ensure both recipe versions produce equal portions.';
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
