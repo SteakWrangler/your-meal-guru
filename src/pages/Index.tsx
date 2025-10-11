@@ -53,7 +53,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-hero">
       {/* Hero Section */}
-      <div className="relative h-[300px] overflow-hidden">
+      <div className="relative h-[250px] md:h-[300px] overflow-hidden">
         <img 
           src={heroImage} 
           alt="Fresh cooking ingredients" 
@@ -61,37 +61,38 @@ const Index = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
-          <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-3 drop-shadow-lg">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground mb-2 md:mb-3 drop-shadow-lg">
             Forkcast
           </h1>
-          <p className="text-lg md:text-xl text-foreground/90 max-w-2xl drop-shadow">
+          <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-2xl drop-shadow">
             From ingredients to table - AI-powered cooking made simple
           </p>
         </div>
       </div>
 
       {/* Mode Selection */}
-      <div className="container mx-auto px-4 py-12 max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {modes.map((mode) => {
             const Icon = mode.icon;
             return (
               <Card
                 key={mode.id}
-                className="p-6 hover:shadow-card transition-all duration-300 cursor-pointer group hover:-translate-y-1"
+                className="p-5 md:p-6 hover:shadow-card transition-all duration-300 cursor-pointer group hover:-translate-y-1"
                 onClick={() => navigate(mode.route)}
               >
-                <div className="flex flex-col items-center text-center space-y-4">
-                  <div className={`p-4 rounded-2xl bg-${mode.color}/10 group-hover:bg-${mode.color}/20 transition-colors`}>
-                    <Icon className={`w-8 h-8 text-${mode.color}`} />
+                <div className="flex flex-col items-center text-center space-y-3 md:space-y-4">
+                  <div className={`p-3 md:p-4 rounded-2xl bg-${mode.color}/10 group-hover:bg-${mode.color}/20 transition-colors`}>
+                    <Icon className={`w-7 h-7 md:w-8 md:h-8 text-${mode.color}`} />
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold mb-2">{mode.title}</h3>
-                    <p className="text-muted-foreground text-sm">{mode.description}</p>
+                    <h3 className="text-lg md:text-xl font-semibold mb-1.5 md:mb-2">{mode.title}</h3>
+                    <p className="text-muted-foreground text-xs md:text-sm">{mode.description}</p>
                   </div>
                   <Button 
                     variant={mode.color === "primary" ? "default" : mode.color === "secondary" ? "secondary" : "outline"}
                     className="w-full mt-2"
+                    size="sm"
                   >
                     Get Started
                   </Button>
@@ -103,8 +104,8 @@ const Index = () => {
       </div>
 
       {/* Footer */}
-      <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
-        <p>Powered by AI • All your cooking needs in one place</p>
+      <div className="container mx-auto px-4 py-6 md:py-8 text-center text-muted-foreground">
+        <p className="text-xs md:text-sm">Powered by AI • All your cooking needs in one place</p>
       </div>
     </div>
   );

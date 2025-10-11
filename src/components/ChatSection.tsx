@@ -72,19 +72,19 @@ export const ChatSection = ({ context, systemPrompt, placeholder = "Ask me anyth
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-8 right-8 rounded-full w-14 h-14 shadow-lg"
+        className="fixed bottom-4 right-4 md:bottom-8 md:right-8 rounded-full w-12 h-12 md:w-14 md:h-14 shadow-lg z-50"
         size="icon"
       >
-        <MessageSquare className="w-6 h-6" />
+        <MessageSquare className="w-5 h-5 md:w-6 md:h-6" />
       </Button>
     );
   }
 
   return (
-    <Card className="fixed bottom-8 right-8 w-96 h-[500px] flex flex-col shadow-xl">
-      <div className="p-4 border-b flex items-center justify-between">
-        <h3 className="font-semibold flex items-center gap-2">
-          <MessageSquare className="w-5 h-5" />
+    <Card className="fixed bottom-4 right-4 md:bottom-8 md:right-8 w-[calc(100vw-2rem)] max-w-sm md:max-w-96 h-[500px] flex flex-col shadow-xl z-50">
+      <div className="p-3 md:p-4 border-b flex items-center justify-between">
+        <h3 className="text-sm md:text-base font-semibold flex items-center gap-2">
+          <MessageSquare className="w-4 h-4 md:w-5 md:h-5" />
           AI Assistant
         </h3>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
@@ -92,20 +92,20 @@ export const ChatSection = ({ context, systemPrompt, placeholder = "Ask me anyth
         </Button>
       </div>
 
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+      <ScrollArea className="flex-1 p-3 md:p-4" ref={scrollRef}>
         {messages.length === 0 && (
           <div className="text-center text-muted-foreground py-8">
-            <p>Ask me anything about what you're viewing!</p>
+            <p className="text-sm md:text-base">Ask me anything about what you're viewing!</p>
           </div>
         )}
-        <div className="space-y-4">
+        <div className="space-y-3 md:space-y-4">
           {messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
             >
               <div
-                className={`max-w-[80%] rounded-lg p-3 ${
+                className={`max-w-[80%] rounded-lg p-2.5 md:p-3 text-sm md:text-base ${
                   message.role === "user"
                     ? "bg-primary text-primary-foreground"
                     : "bg-muted"
@@ -117,15 +117,15 @@ export const ChatSection = ({ context, systemPrompt, placeholder = "Ask me anyth
           ))}
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-muted rounded-lg p-3">
-                <Loader2 className="w-5 h-5 animate-spin" />
+              <div className="bg-muted rounded-lg p-2.5 md:p-3">
+                <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
               </div>
             </div>
           )}
         </div>
       </ScrollArea>
 
-      <div className="p-4 border-t">
+      <div className="p-3 md:p-4 border-t">
         <div className="flex gap-2">
           <Input
             placeholder={placeholder}
@@ -133,9 +133,10 @@ export const ChatSection = ({ context, systemPrompt, placeholder = "Ask me anyth
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
             disabled={loading}
+            className="text-sm md:text-base"
           />
-          <Button onClick={sendMessage} disabled={loading} size="icon">
-            <Send className="w-5 h-5" />
+          <Button onClick={sendMessage} disabled={loading} size="icon" className="flex-shrink-0">
+            <Send className="w-4 h-4 md:w-5 md:h-5" />
           </Button>
         </div>
       </div>

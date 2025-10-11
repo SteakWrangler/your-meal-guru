@@ -52,35 +52,35 @@ const Suggestions = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="rounded-full"
+            className="rounded-full flex-shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">Meal Suggestions</h1>
-            <p className="text-muted-foreground">Can't decide? Let AI inspire you</p>
+            <h1 className="text-2xl md:text-3xl font-bold">Meal Suggestions</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Can't decide? Let AI inspire you</p>
           </div>
         </div>
 
         {/* Get Suggestions Button */}
-        <Card className="p-8 text-center mb-8">
-          <Sparkles className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h2 className="text-2xl font-semibold mb-2">Need Inspiration?</h2>
-          <p className="text-muted-foreground mb-6">
+        <Card className="p-6 md:p-8 text-center mb-6 md:mb-8">
+          <Sparkles className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 text-primary" />
+          <h2 className="text-xl md:text-2xl font-semibold mb-2">Need Inspiration?</h2>
+          <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6">
             Get personalized meal suggestions based on popular dishes and cooking trends
           </p>
           <Button
             onClick={getSuggestions}
             disabled={loading}
             size="lg"
-            className="px-8"
+            className="px-6 md:px-8 w-full sm:w-auto"
           >
             {loading ? (
               <>
@@ -96,22 +96,22 @@ const Suggestions = () => {
         {/* Suggestions */}
         {suggestions.length > 0 && (
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-4">Here are some ideas:</h3>
-            <div className="grid gap-4">
+            <h3 className="text-lg md:text-xl font-semibold mb-4">Here are some ideas:</h3>
+            <div className="grid gap-3 md:gap-4">
               {suggestions.map((suggestion, index) => (
                 <Card
                   key={index}
-                  className="p-6 hover:shadow-card transition-all cursor-pointer group"
+                  className="p-4 md:p-6 hover:shadow-card transition-all cursor-pointer group"
                   onClick={() => handleRecipeClick(suggestion)}
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-lg font-medium group-hover:text-primary transition-colors">
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base md:text-lg font-medium group-hover:text-primary transition-colors truncate">
                         {suggestion}
                       </h4>
                     </div>
-                    <Button variant="ghost" size="sm">
-                      View Recipe →
+                    <Button variant="ghost" size="sm" className="flex-shrink-0 text-xs md:text-sm">
+                      View →
                     </Button>
                   </div>
                 </Card>

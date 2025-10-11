@@ -97,28 +97,28 @@ const Ingredients = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => navigate("/")}
-            className="rounded-full"
+            className="rounded-full flex-shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">What Can I Make?</h1>
-            <p className="text-muted-foreground">Discover recipes from your ingredients</p>
+            <h1 className="text-2xl md:text-3xl font-bold">What Can I Make?</h1>
+            <p className="text-sm md:text-base text-muted-foreground">Discover recipes from your ingredients</p>
           </div>
         </div>
 
         {/* Photo Upload */}
-        <Card className="p-8 text-center mb-6">
-          <Camera className="w-12 h-12 mx-auto mb-4 text-primary" />
-          <h3 className="text-xl font-semibold mb-2">Upload or Take a Photo</h3>
-          <p className="text-muted-foreground mb-4">
+        <Card className="p-6 md:p-8 text-center mb-4 md:mb-6">
+          <Camera className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 text-primary" />
+          <h3 className="text-lg md:text-xl font-semibold mb-2">Upload or Take a Photo</h3>
+          <p className="text-sm md:text-base text-muted-foreground mb-3 md:mb-4">
             Snap a picture or upload an image of your fridge or pantry
           </p>
           <input
@@ -132,6 +132,7 @@ const Ingredients = () => {
             variant="outline" 
             onClick={() => fileInputRef.current?.click()}
             disabled={isAnalyzing}
+            className="w-full sm:w-auto"
           >
             {isAnalyzing ? (
               <>
@@ -148,13 +149,13 @@ const Ingredients = () => {
         </Card>
 
         {/* Manual Input */}
-        <Card className="p-8">
-          <h3 className="text-xl font-semibold mb-4">Or List Your Ingredients</h3>
+        <Card className="p-6 md:p-8">
+          <h3 className="text-lg md:text-xl font-semibold mb-3 md:mb-4">Or List Your Ingredients</h3>
           <Textarea
             placeholder="Enter ingredients separated by commas&#10;Example: chicken, tomatoes, garlic, pasta, olive oil"
             value={ingredients}
             onChange={(e) => setIngredients(e.target.value)}
-            className="min-h-[150px] mb-4"
+            className="min-h-[120px] md:min-h-[150px] mb-3 md:mb-4 text-base"
           />
           <Button onClick={handleAnalyze} className="w-full" disabled={isAnalyzing}>
             {isAnalyzing ? (
