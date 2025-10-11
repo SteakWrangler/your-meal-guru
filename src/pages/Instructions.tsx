@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Loader2, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,14 +112,16 @@ const Instructions = () => {
           <Card className="p-4 md:p-8">
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{recipe.title || dishName}</h2>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Standard Version */}
-              <div className="space-y-6">
-                <h3 className="text-lg md:text-xl font-bold text-primary border-b pb-2">Standard Version</h3>
-                
+            <Tabs defaultValue="standard" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="standard">Standard</TabsTrigger>
+                <TabsTrigger value="fromScratch">From Scratch</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="standard" className="space-y-6">
                 {recipe.standard?.ingredients && (
                   <div>
-                    <h4 className="text-base md:text-lg font-semibold mb-3">Ingredients</h4>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
                     <ul className="space-y-2">
                       {recipe.standard.ingredients.map((ingredient: string, index: number) => (
                         <li key={index} className="flex items-start gap-2">
@@ -132,7 +135,7 @@ const Instructions = () => {
 
                 {recipe.standard?.steps && (
                   <div>
-                    <h4 className="text-base md:text-lg font-semibold mb-3">Instructions</h4>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
                     <ol className="space-y-3 md:space-y-4">
                       {recipe.standard.steps.map((step: string, index: number) => (
                         <li key={index} className="flex gap-3 md:gap-4">
@@ -148,28 +151,24 @@ const Instructions = () => {
 
                 {recipe.standard?.tips && (
                   <div className="p-3 md:p-4 bg-muted rounded-lg">
-                    <h5 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h5>
+                    <h4 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h4>
                     <p className="text-xs md:text-sm text-muted-foreground">{recipe.standard.tips}</p>
                   </div>
                 )}
-              </div>
+              </TabsContent>
 
-              {/* From Scratch Version */}
-              <div className="space-y-6">
-                <h3 className="text-lg md:text-xl font-bold text-primary border-b pb-2">From Scratch</h3>
-                
+              <TabsContent value="fromScratch" className="space-y-6">
                 {recipe.fromScratch?.ingredients && (
                   <div>
-                    <h4 className="text-base md:text-lg font-semibold mb-3">Ingredients</h4>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
                     <ul className="space-y-2">
                       {recipe.fromScratch.ingredients.map((ingredient: string, index: number) => {
-                        // Check if this is a subsection header (e.g., "For the pasta:", "For the sauce:")
                         const isSubsection = /^(for the|for|to make)/i.test(ingredient.trim());
                         
                         if (isSubsection) {
                           return (
                             <li key={index} className="pt-3 first:pt-0">
-                              <h5 className="text-sm md:text-base font-bold text-primary mb-1">{ingredient}</h5>
+                              <h4 className="text-base md:text-lg font-bold text-primary mb-1">{ingredient}</h4>
                             </li>
                           );
                         }
@@ -187,16 +186,15 @@ const Instructions = () => {
 
                 {recipe.fromScratch?.steps && (
                   <div>
-                    <h4 className="text-base md:text-lg font-semibold mb-3">Instructions</h4>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
                     <ol className="space-y-3 md:space-y-4">
                       {recipe.fromScratch.steps.map((step: string, index: number) => {
-                        // Check if this is a subsection header
                         const isSubsection = /^(for the|for|to make|making the)/i.test(step.trim());
                         
                         if (isSubsection) {
                           return (
                             <li key={index} className="pt-3 first:pt-0 list-none">
-                              <h5 className="text-sm md:text-base font-bold text-primary mb-2">{step}</h5>
+                              <h4 className="text-base md:text-lg font-bold text-primary mb-2">{step}</h4>
                             </li>
                           );
                         }
@@ -216,12 +214,12 @@ const Instructions = () => {
 
                 {recipe.fromScratch?.tips && (
                   <div className="p-3 md:p-4 bg-muted rounded-lg">
-                    <h5 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h5>
+                    <h4 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h4>
                     <p className="text-xs md:text-sm text-muted-foreground">{recipe.fromScratch.tips}</p>
                   </div>
                 )}
-              </div>
-            </div>
+              </TabsContent>
+            </Tabs>
           </Card>
         )}
 
