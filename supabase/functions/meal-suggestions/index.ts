@@ -64,20 +64,29 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } else if (type === 'suggest') {
-      // Skip cache if forceRegenerate is true or if ingredients are provided
-      if (!forceRegenerate && !ingredients) {
-        const { data: cachedSuggestions } = await supabase
-          .from('meal_suggestions')
-          .select('suggestion')
-          .limit(5);
+      const limit = 5;
 
-        if (cachedSuggestions && cachedSuggestions.length >= 5) {
-          console.log('Returning cached suggestions');
+      // If no specific ingredients were provided, return a random sample from saved suggestions
+      if (!ingredients) {
+        const { data: allMeals, error: fetchErr } = await supabase
+          .from('meal_suggestions')
+          .select('suggestion');
+
+        if (fetchErr) {
+          console.error('Failed to fetch saved suggestions:', fetchErr);
+        }
+
+        if (allMeals && allMeals.length > 0) {
+          // Shuffle and pick a random sample
+          const shuffled = [...allMeals].sort(() => Math.random() - 0.5);
+          const sample = shuffled.slice(0, limit).map(s => s.suggestion);
+          console.log(`Returning random sample from DB (${sample.length}/${allMeals.length})`);
           return new Response(
-            JSON.stringify({ suggestions: cachedSuggestions.map(s => s.suggestion) }),
+            JSON.stringify({ suggestions: sample }),
             { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
           );
         }
+        // If DB empty, fall through to AI generation as a fallback
       }
 
       // Generate new suggestions
