@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName } = await req.json();
+    const { type, dishName, image } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -24,7 +24,46 @@ serve(async (req) => {
 
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
-    if (type === 'suggest') {
+    if (type === 'analyze-image') {
+      console.log('Analyzing image for ingredients');
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                {
+                  type: 'text',
+                  text: 'Analyze this image and list all the food ingredients you can identify. Return only the ingredient names as a comma-separated list, nothing else.'
+                },
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: image
+                  }
+                }
+              ]
+            }
+          ]
+        })
+      });
+
+      const data = await response.json();
+      const ingredientsText = data.choices[0].message.content;
+      const ingredients = ingredientsText.split(',').map((i: string) => i.trim());
+
+      return new Response(
+        JSON.stringify({ ingredients }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else if (type === 'suggest') {
       // Check cache first
       const { data: cachedSuggestions } = await supabase
         .from('meal_suggestions')
