@@ -305,40 +305,9 @@ Format your response as JSON with this structure:
       
       const prompt = `Create a comprehensive diet guide based on the following goals and preferences: ${preferences}
 
-Provide detailed information including:
-1. An overview of how to achieve their goals
-2. Key recommendations for their dietary approach
-3. A sample daily meal plan with specific meal suggestions
-4. Additional tips for success
+Provide detailed information including an overview, key recommendations, a sample daily meal plan, and practical tips for success.`;
 
-Format your response as JSON with this structure:
-{
-  "title": "Personalized [Diet Type] Guide",
-  "overview": "Brief overview of the diet approach and how it helps achieve their goals (2-3 sentences)",
-  "recommendations": [
-    "Key recommendation 1 (be specific and actionable)",
-    "Key recommendation 2",
-    "Key recommendation 3",
-    "Key recommendation 4",
-    "Key recommendation 5"
-  ],
-  "mealPlan": {
-    "breakfast": "Specific breakfast example with portion guidance",
-    "lunch": "Specific lunch example with portion guidance",
-    "dinner": "Specific dinner example with portion guidance",
-    "snacks": "Healthy snack suggestions"
-  },
-  "tips": [
-    "Practical tip 1 for following this diet",
-    "Practical tip 2",
-    "Practical tip 3",
-    "Practical tip 4"
-  ]
-}
-
-Make the guide practical, specific, and tailored to their stated goals. Include portion guidance where relevant.`;
-
-      const systemPrompt = 'You are a professional nutritionist and dietitian providing evidence-based dietary guidance. Always respond with valid JSON only. Be specific, practical, and supportive in your recommendations.';
+      const systemPrompt = 'You are a professional nutritionist and dietitian providing evidence-based dietary guidance. Be specific, practical, and supportive in your recommendations.';
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
@@ -352,6 +321,51 @@ Make the guide practical, specific, and tailored to their stated goals. Include 
             { role: 'system', content: systemPrompt },
             { role: 'user', content: prompt }
           ],
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "create_diet_guide",
+                description: "Create a comprehensive diet guide with structured information",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    title: { 
+                      type: "string",
+                      description: "A personalized title for the diet guide"
+                    },
+                    overview: { 
+                      type: "string",
+                      description: "Brief overview of the diet approach and how it helps achieve their goals"
+                    },
+                    recommendations: {
+                      type: "array",
+                      items: { type: "string" },
+                      description: "5 specific and actionable recommendations"
+                    },
+                    mealPlan: {
+                      type: "object",
+                      properties: {
+                        breakfast: { type: "string" },
+                        lunch: { type: "string" },
+                        dinner: { type: "string" },
+                        snacks: { type: "string" }
+                      },
+                      required: ["breakfast", "lunch", "dinner", "snacks"]
+                    },
+                    tips: {
+                      type: "array",
+                      items: { type: "string" },
+                      description: "4 practical tips for following this diet"
+                    }
+                  },
+                  required: ["title", "overview", "recommendations", "mealPlan", "tips"],
+                  additionalProperties: false
+                }
+              }
+            }
+          ],
+          tool_choice: { type: "function", function: { name: "create_diet_guide" } }
         }),
       });
 
@@ -362,22 +376,20 @@ Make the guide practical, specific, and tailored to their stated goals. Include 
       }
 
       const data = await response.json();
-      let content = data.choices[0].message.content;
-
-      // Strip markdown code blocks if present
-      content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-
-      try {
-        const guide = JSON.parse(content);
-        
-        return new Response(
-          JSON.stringify(guide),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      } catch (e) {
-        console.error('Failed to parse diet guide JSON:', e);
-        throw new Error('Failed to generate valid diet guide');
+      console.log('AI Response:', JSON.stringify(data, null, 2));
+      
+      const toolCall = data.choices[0].message.tool_calls?.[0];
+      if (!toolCall) {
+        console.error('No tool call in response');
+        throw new Error('Failed to generate diet guide');
       }
+
+      const guide = JSON.parse(toolCall.function.arguments);
+      
+      return new Response(
+        JSON.stringify(guide),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     throw new Error('Invalid request type');
