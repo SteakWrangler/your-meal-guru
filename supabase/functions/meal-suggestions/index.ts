@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history } = await req.json();
+    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -64,23 +64,27 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } else if (type === 'suggest') {
-      // Check cache first
-      const { data: cachedSuggestions } = await supabase
-        .from('meal_suggestions')
-        .select('suggestion')
-        .limit(5);
+      // Skip cache if forceRegenerate is true or if ingredients are provided
+      if (!forceRegenerate && !ingredients) {
+        const { data: cachedSuggestions } = await supabase
+          .from('meal_suggestions')
+          .select('suggestion')
+          .limit(5);
 
-      if (cachedSuggestions && cachedSuggestions.length >= 5) {
-        console.log('Returning cached suggestions');
-        return new Response(
-          JSON.stringify({ suggestions: cachedSuggestions.map(s => s.suggestion) }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
+        if (cachedSuggestions && cachedSuggestions.length >= 5) {
+          console.log('Returning cached suggestions');
+          return new Response(
+            JSON.stringify({ suggestions: cachedSuggestions.map(s => s.suggestion) }),
+            { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
       }
 
       // Generate new suggestions
       console.log('Generating new suggestions with AI');
-      const prompt = 'Suggest 5 popular, delicious meals that people love to cook at home. Just list the meal names, one per line, no extra text or numbering.';
+      const prompt = ingredients 
+        ? `Based on these ingredients: ${ingredients.join(', ')}, suggest 5 delicious meals that can be made. Just list the meal names, one per line, no extra text or numbering.`
+        : 'Suggest 5 popular, delicious meals that people love to cook at home. Just list the meal names, one per line, no extra text or numbering.';
       const systemPrompt = 'You are a helpful cooking assistant. Provide clear, practical cooking advice.';
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -114,11 +118,13 @@ serve(async (req) => {
         .filter((line: string) => line.length > 0)
         .slice(0, 5);
 
-      // Save to cache
-      for (const suggestion of suggestions) {
-        await supabase
-          .from('meal_suggestions')
-          .upsert({ suggestion }, { onConflict: 'suggestion' });
+      // Save to cache only if no specific ingredients (general suggestions)
+      if (!ingredients) {
+        for (const suggestion of suggestions) {
+          await supabase
+            .from('meal_suggestions')
+            .upsert({ suggestion }, { onConflict: 'suggestion' });
+        }
       }
 
       return new Response(
