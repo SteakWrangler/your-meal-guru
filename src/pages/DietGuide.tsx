@@ -62,8 +62,10 @@ const DietGuide = () => {
     }
   }, [guide]);
 
-  const getGuide = async () => {
-    if (!preferences.trim()) {
+  const getGuide = async (customPreferences?: string) => {
+    const prefsToUse = customPreferences || preferences;
+    
+    if (!prefsToUse.trim()) {
       toast.error("Please enter your dietary preferences or goals");
       return;
     }
@@ -72,7 +74,7 @@ const DietGuide = () => {
     try {
       const { data, error } = await supabase.functions.invoke("meal-suggestions", {
         body: {
-          preferences: preferences,
+          preferences: prefsToUse,
           type: "diet-guide"
         },
       });
@@ -92,11 +94,8 @@ const DietGuide = () => {
   const handleLearnMore = (dietName: string) => {
     const prompt = `Tell me everything I'd need to know about the ${dietName}. Also give me any tips or advice you think is relevant.`;
     setPreferences(prompt);
-    setGuide(null); // Clear previous guide
-    // Trigger the guide generation immediately
-    setTimeout(() => {
-      getGuide();
-    }, 100);
+    setGuide(null);
+    getGuide(prompt);
   };
 
   return (
@@ -130,7 +129,7 @@ const DietGuide = () => {
             className="min-h-[120px] mb-4 text-sm md:text-base"
           />
           <Button
-            onClick={getGuide}
+            onClick={() => getGuide()}
             disabled={loading || !preferences.trim()}
             className="w-full"
             size="lg"
