@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ArrowLeft, Loader2, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -111,42 +112,90 @@ const Instructions = () => {
           <Card className="p-4 md:p-8">
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{recipe.title || dishName}</h2>
             
-            {recipe.ingredients && (
-              <div className="mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
-                <ul className="space-y-2">
-                  {recipe.ingredients.map((ingredient: string, index: number) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <span className="text-primary mt-1">•</span>
-                      <span>{ingredient}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <Tabs defaultValue="standard" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="standard">Standard</TabsTrigger>
+                <TabsTrigger value="fromScratch">From Scratch</TabsTrigger>
+              </TabsList>
 
-            {recipe.steps && (
-              <div>
-                <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
-                <ol className="space-y-3 md:space-y-4">
-                  {recipe.steps.map((step: string, index: number) => (
-                    <li key={index} className="flex gap-3 md:gap-4">
-                      <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
-                        {index + 1}
-                      </span>
-                      <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
+              <TabsContent value="standard" className="space-y-6">
+                {recipe.standard?.ingredients && (
+                  <div>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
+                    <ul className="space-y-2">
+                      {recipe.standard.ingredients.map((ingredient: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-primary mt-1">•</span>
+                          <span className="text-sm md:text-base">{ingredient}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-            {recipe.tips && (
-              <div className="mt-6 p-4 bg-muted rounded-lg">
-                <h4 className="font-semibold mb-2">Pro Tips</h4>
-                <p className="text-sm text-muted-foreground">{recipe.tips}</p>
-              </div>
-            )}
+                {recipe.standard?.steps && (
+                  <div>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
+                    <ol className="space-y-3 md:space-y-4">
+                      {recipe.standard.steps.map((step: string, index: number) => (
+                        <li key={index} className="flex gap-3 md:gap-4">
+                          <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
+                            {index + 1}
+                          </span>
+                          <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {recipe.standard?.tips && (
+                  <div className="p-3 md:p-4 bg-muted rounded-lg">
+                    <h4 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h4>
+                    <p className="text-xs md:text-sm text-muted-foreground">{recipe.standard.tips}</p>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="fromScratch" className="space-y-6">
+                {recipe.fromScratch?.ingredients && (
+                  <div>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
+                    <ul className="space-y-2">
+                      {recipe.fromScratch.ingredients.map((ingredient: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <span className="text-primary mt-1">•</span>
+                          <span className="text-sm md:text-base">{ingredient}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {recipe.fromScratch?.steps && (
+                  <div>
+                    <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
+                    <ol className="space-y-3 md:space-y-4">
+                      {recipe.fromScratch.steps.map((step: string, index: number) => (
+                        <li key={index} className="flex gap-3 md:gap-4">
+                          <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
+                            {index + 1}
+                          </span>
+                          <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {recipe.fromScratch?.tips && (
+                  <div className="p-3 md:p-4 bg-muted rounded-lg">
+                    <h4 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h4>
+                    <p className="text-xs md:text-sm text-muted-foreground">{recipe.fromScratch.tips}</p>
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
           </Card>
         )}
 

@@ -126,37 +126,28 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     } else if (type === 'recipe') {
-      // Check cache first
-      const { data: cachedRecipe } = await supabase
-        .from('recipes')
-        .select('*')
-        .ilike('dish_name', dishName)
-        .single();
-
-      if (cachedRecipe) {
-        console.log('Returning cached recipe');
-        return new Response(
-          JSON.stringify({ 
-            recipe: {
-              title: cachedRecipe.title,
-              ingredients: cachedRecipe.ingredients,
-              steps: cachedRecipe.steps,
-              tips: cachedRecipe.tips
-            }
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-
+      // Note: Skipping cache for now since we changed the recipe format
+      // Old cached recipes won't match the new dual-version structure
+      
       // Generate new recipe
       console.log('Generating new recipe with AI');
-      const prompt = `Provide a detailed recipe for ${dishName}. Format your response as JSON with this structure:
+      const prompt = `Provide two versions of a recipe for ${dishName}. Format your response as JSON with this structure:
 {
   "title": "dish name",
-  "ingredients": ["ingredient 1", "ingredient 2"],
-  "steps": ["step 1", "step 2"],
-  "tips": "helpful cooking tips"
-}`;
+  "standard": {
+    "ingredients": ["ingredient 1 (using convenient pre-made items like canned sauce)", "ingredient 2"],
+    "steps": ["simple step 1", "simple step 2"],
+    "tips": "helpful cooking tips for the standard version"
+  },
+  "fromScratch": {
+    "ingredients": ["ingredient 1 (made from scratch)", "ingredient 2"],
+    "steps": ["detailed step 1", "detailed step 2"],
+    "tips": "helpful cooking tips for the from-scratch version"
+  }
+}
+
+The standard version should use convenient shortcuts like pre-made sauces, canned items, etc.
+The from-scratch version should show how to make everything from scratch with fresh ingredients.`;
       const systemPrompt = 'You are a professional chef providing detailed recipes. Always respond with valid JSON only.';
 
       const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -189,16 +180,8 @@ serve(async (req) => {
       try {
         const recipe = JSON.parse(content);
         
-        // Save to cache
-        await supabase
-          .from('recipes')
-          .insert({
-            dish_name: dishName,
-            title: recipe.title,
-            ingredients: recipe.ingredients,
-            steps: recipe.steps,
-            tips: recipe.tips
-          });
+        // Note: Not caching dual-version recipes to keep cache simple
+        // Can be added later if needed
 
         return new Response(
           JSON.stringify({ recipe }),
@@ -208,9 +191,16 @@ serve(async (req) => {
         console.error('Failed to parse recipe JSON:', e);
         const recipe = {
           title: dishName,
-          ingredients: [],
-          steps: content.split('\n').filter((line: string) => line.trim()),
-          tips: 'AI-generated recipe'
+          standard: {
+            ingredients: [],
+            steps: content.split('\n').filter((line: string) => line.trim()).slice(0, 5),
+            tips: 'AI-generated recipe'
+          },
+          fromScratch: {
+            ingredients: [],
+            steps: content.split('\n').filter((line: string) => line.trim()),
+            tips: 'AI-generated recipe'
+          }
         };
         return new Response(
           JSON.stringify({ recipe }),
