@@ -121,8 +121,8 @@ const Recreate = () => {
         {(dish || style) && (
           <ChatSection
             context={{ dish, style }}
-            systemPrompt="You are a helpful cooking assistant specializing in recreating restaurant dishes. Help users understand techniques, suggest ingredient substitutions, and provide tips for achieving restaurant-quality results at home."
-            placeholder="Ask about recreating this dish..."
+            systemPrompt="You are a creative chef assistant. You have information about the dish and style the user is working with to answer specific questions, but you can also provide general cooking tips, culinary techniques, and creative ideas even if they're not directly related to this recreation."
+            placeholder="Ask about recreating this dish or any cooking questions..."
           />
         )}
       </div>

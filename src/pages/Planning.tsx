@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ChatSection } from "@/components/ChatSection";
+import { PrintButton } from "@/components/PrintButton";
 
 interface MealPlan {
   [day: string]: {
@@ -219,11 +220,14 @@ const Planning = () => {
         )}
 
         {mealPlan && (
-          <ChatSection
-            context={{ mealPlan, preferences, numberOfPeople, dietaryRestrictions }}
-            systemPrompt="You are a helpful meal planning assistant. Help users modify their meal plan, suggest alternatives, provide shopping lists, and answer questions about their weekly plan."
-            placeholder="Ask about your meal plan..."
-          />
+          <>
+            <PrintButton />
+            <ChatSection
+              context={{ mealPlan, preferences, numberOfPeople, dietaryRestrictions }}
+              systemPrompt="You are a helpful cooking assistant. You have access to the user's meal plan to answer specific questions about it, but you can also answer general cooking questions, provide tips, or help with any culinary topics even if they're not directly related to the meal plan shown."
+              placeholder="Ask about your meal plan or cooking in general..."
+            />
+          </>
         )}
       </div>
     </div>

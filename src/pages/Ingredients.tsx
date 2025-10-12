@@ -172,8 +172,8 @@ const Ingredients = () => {
         {ingredients && (
           <ChatSection
             context={{ ingredients }}
-            systemPrompt="You are a helpful cooking assistant. Help users with ingredient substitutions, alternatives, storage tips, and recipe suggestions based on their ingredients."
-            placeholder="Ask about these ingredients..."
+            systemPrompt="You are a helpful cooking assistant. You have access to the user's ingredient list to answer questions about them and suggest recipes, but you can also answer general cooking questions, provide tips, and help with any culinary topics."
+            placeholder="Ask about these ingredients or cooking in general..."
           />
         )}
       </div>

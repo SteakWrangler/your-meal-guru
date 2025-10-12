@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatSection } from "@/components/ChatSection";
+import { PrintButton } from "@/components/PrintButton";
 import {
   Accordion,
   AccordionContent,
@@ -234,11 +235,14 @@ const DietGuide = () => {
 
         {/* Chat Section */}
         {guide && (
-          <ChatSection 
-            context={`Diet Guide: ${JSON.stringify(guide)}`}
-            systemPrompt="You are a helpful nutrition assistant. Answer questions about the diet guide provided in the context."
-            placeholder="Ask about your diet plan..."
-          />
+          <>
+            <PrintButton />
+            <ChatSection 
+              context={`Diet Guide: ${JSON.stringify(guide)}`}
+              systemPrompt="You are a nutrition and diet expert. You have access to the user's diet preferences and guide to answer specific questions, but you can also provide general nutritional advice, explain dietary concepts, and help with any health and wellness topics even if they're not directly related to the current guide."
+              placeholder="Ask about your diet guide or nutrition in general..."
+            />
+          </>
         )}
       </div>
     </div>

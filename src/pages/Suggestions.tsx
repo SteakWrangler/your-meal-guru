@@ -6,6 +6,7 @@ import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatSection } from "@/components/ChatSection";
+import { PrintButton } from "@/components/PrintButton";
 
 const Suggestions = () => {
   const navigate = useNavigate();
@@ -121,11 +122,14 @@ const Suggestions = () => {
         )}
 
         {suggestions.length > 0 && (
-          <ChatSection
-            context={{ suggestions }}
-            systemPrompt="You are a helpful cooking assistant. Help users understand these meal suggestions, provide variations, explain cooking techniques, and suggest modifications based on preferences."
-            placeholder="Ask about these suggestions..."
-          />
+          <>
+            <PrintButton />
+            <ChatSection
+              context={{ suggestions }}
+              systemPrompt="You are a helpful cooking assistant. You have access to these meal suggestions to answer questions about them, but you can also provide cooking tips, recipe ideas, and answer general culinary questions beyond what's shown here."
+              placeholder="Ask about these suggestions or cooking in general..."
+            />
+          </>
         )}
       </div>
     </div>

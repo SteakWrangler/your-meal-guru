@@ -8,6 +8,7 @@ import { ArrowLeft, Loader2, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ChatSection } from "@/components/ChatSection";
+import { PrintButton } from "@/components/PrintButton";
 
 const Instructions = () => {
   const navigate = useNavigate();
@@ -224,11 +225,14 @@ const Instructions = () => {
         )}
 
         {recipe && (
-          <ChatSection
-            context={recipe}
-            systemPrompt="You are a helpful cooking assistant. Help users understand the recipe they're viewing, clarify steps, suggest substitutions, and answer cooking questions."
-            placeholder="Ask about this recipe..."
-          />
+          <>
+            <PrintButton />
+            <ChatSection
+              context={recipe}
+              systemPrompt="You are a professional chef assistant. You have access to this specific recipe to answer questions about it, explain techniques (like what 'sauté' means or how to do it), and provide substitutions. You can also answer general cooking questions, culinary techniques, or food-related topics even if they're not directly mentioned in this recipe."
+              placeholder="Ask about this recipe or any cooking questions..."
+            />
+          </>
         )}
       </div>
     </div>
