@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate, dish, currentIngredients, dietInfo } = await req.json();
+    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate, dish, currentIngredients, dietInfo, foodInput } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -580,6 +580,56 @@ Start your response by acknowledging what they're eating, then list the potentia
       
       return new Response(
         JSON.stringify({ analysis }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else if (type === 'calorie-estimate') {
+      console.log('Estimating nutritional information');
+      
+      const prompt = `Provide a nutritional estimate for: ${foodInput}
+
+If specific brands are mentioned (like Publix, Bubba Burger, etc.), try to use their actual nutritional data.
+If the description is general, provide reasonable ranges based on typical portions.
+
+Include:
+- Calories (exact number or range)
+- Protein (grams)
+- Fat (grams)
+- Carbohydrates (grams)
+- Fiber (grams)
+- Sugar (grams)
+- Sodium (mg)
+
+If the input is specific enough, provide exact numbers. If it's general, provide ranges (e.g., "250-350 calories").
+Be practical and realistic with your estimates.`;
+
+      const systemPrompt = 'You are a nutrition expert helping people understand the nutritional content of their meals. Be accurate, practical, and explain your reasoning when making estimates. If brands are mentioned, try to use actual data from those brands when possible.';
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ]
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        throw new Error(`AI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const result = data.choices[0].message.content;
+      
+      return new Response(
+        JSON.stringify({ result }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
