@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { ChefHat, Lightbulb, Camera, Target, Calendar, Apple, Sparkles, Salad } from "lucide-react";
+import { ChefHat, Lightbulb, Camera, Target, Calendar, Apple, Sparkles, Salad, Calculator } from "lucide-react";
 import heroImage from "@/assets/hero-cooking.jpg";
 
 const Index = () => {
@@ -71,6 +71,14 @@ const Index = () => {
       icon: Salad,
       color: "secondary",
       route: "/nutrition-analysis",
+    },
+    {
+      id: "calorie",
+      title: "Calorie Estimator",
+      description: "Estimate calories and nutrition for any food",
+      icon: Calculator,
+      color: "accent",
+      route: "/calorie-estimator",
     },
   ];
 
