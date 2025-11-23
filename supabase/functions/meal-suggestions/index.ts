@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate, dish, currentIngredients } = await req.json();
+    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate, dish, currentIngredients, dietInfo } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -540,6 +540,46 @@ Also provide one general tip for making this dish better.`;
       
       return new Response(
         JSON.stringify(suggestions),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else if (type === 'nutrition-analysis') {
+      console.log('Analyzing diet for nutritional gaps');
+      
+      const prompt = `Analyze this diet: ${dietInfo}
+
+First, interpret what they're eating (whether they gave a general description like "carnivore" or a detailed meal plan).
+Then identify potential nutritional gaps and suggest specific foods or supplements to address those gaps.
+
+Start your response by acknowledging what they're eating, then list the potential nutritional gaps, and finally provide actionable suggestions.`;
+
+      const systemPrompt = 'You are a knowledgeable nutrition advisor. Be practical, supportive, and evidence-based in your recommendations. When given general diet descriptions, make reasonable assumptions about typical foods in that diet.';
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ]
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        throw new Error(`AI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const analysis = data.choices[0].message.content;
+      
+      return new Response(
+        JSON.stringify({ analysis }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
