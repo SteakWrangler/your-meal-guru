@@ -11,6 +11,7 @@ import Recreate from "./pages/Recreate";
 import Enhance from "./pages/Enhance";
 import Planning from "./pages/Planning";
 import DietGuide from "./pages/DietGuide";
+import NutritionAnalysis from "./pages/NutritionAnalysis";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/enhance" element={<Enhance />} />
           <Route path="/planning" element={<Planning />} />
           <Route path="/diet" element={<DietGuide />} />
+          <Route path="/nutrition-analysis" element={<NutritionAnalysis />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
