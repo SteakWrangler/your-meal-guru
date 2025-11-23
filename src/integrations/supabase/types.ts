@@ -37,27 +37,36 @@ export type Database = {
           created_at: string | null
           dish_name: string
           id: string
-          ingredients: string[]
-          steps: string[]
-          tips: string | null
+          scratch_ingredients: string[]
+          scratch_steps: string[]
+          scratch_tips: string | null
+          standard_ingredients: string[]
+          standard_steps: string[]
+          standard_tips: string | null
           title: string
         }
         Insert: {
           created_at?: string | null
           dish_name: string
           id?: string
-          ingredients: string[]
-          steps: string[]
-          tips?: string | null
+          scratch_ingredients: string[]
+          scratch_steps: string[]
+          scratch_tips?: string | null
+          standard_ingredients: string[]
+          standard_steps: string[]
+          standard_tips?: string | null
           title: string
         }
         Update: {
           created_at?: string | null
           dish_name?: string
           id?: string
-          ingredients?: string[]
-          steps?: string[]
-          tips?: string | null
+          scratch_ingredients?: string[]
+          scratch_steps?: string[]
+          scratch_tips?: string | null
+          standard_ingredients?: string[]
+          standard_steps?: string[]
+          standard_tips?: string | null
           title?: string
         }
         Relationships: []

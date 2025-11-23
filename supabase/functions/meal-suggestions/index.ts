@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate } = await req.json();
+    const { type, dishName, image, preferences, numberOfPeople, dietaryRestrictions, message, context, systemPrompt, history, ingredients, forceRegenerate, dish, currentIngredients } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
@@ -454,6 +454,92 @@ Provide detailed information including an overview, key recommendations, a sampl
       
       return new Response(
         JSON.stringify(guide),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    } else if (type === 'enhance') {
+      console.log('Generating dish enhancement suggestions');
+      
+      const prompt = `I'm making ${dish} using these ingredients: ${currentIngredients}
+
+Suggest 3-5 ingredients I could add to enhance this dish. For each suggestion:
+- If the ingredient requires special preparation or cooking instructions (like seasonings that need to be mixed in while cooking, or items that need specific timing), provide those instructions
+- If it's just a topping or garnish that gets added at the end with no special preparation, don't include instructions
+
+Also provide one general tip for making this dish better.`;
+
+      const systemPrompt = 'You are a professional chef helping home cooks improve their dishes. Be specific and practical with your suggestions.';
+
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: prompt }
+          ],
+          tools: [
+            {
+              type: "function",
+              function: {
+                name: "suggest_enhancements",
+                description: "Suggest ingredients and preparation methods to enhance a dish",
+                parameters: {
+                  type: "object",
+                  properties: {
+                    additions: {
+                      type: "array",
+                      items: {
+                        type: "object",
+                        properties: {
+                          ingredient: { 
+                            type: "string",
+                            description: "The ingredient to add"
+                          },
+                          instructions: { 
+                            type: "string",
+                            description: "How to prepare or incorporate this ingredient. Only include if special preparation is needed, omit for simple toppings."
+                          }
+                        },
+                        required: ["ingredient"]
+                      },
+                      description: "3-5 suggested ingredient additions"
+                    },
+                    generalTips: {
+                      type: "string",
+                      description: "One helpful general tip for making this dish better"
+                    }
+                  },
+                  required: ["additions"],
+                  additionalProperties: false
+                }
+              }
+            }
+          ],
+          tool_choice: { type: "function", function: { name: "suggest_enhancements" } }
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('AI API error:', response.status, errorText);
+        throw new Error(`AI API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const toolCall = data.choices[0].message.tool_calls?.[0];
+      if (!toolCall) {
+        console.error('No tool call in response');
+        throw new Error('Failed to generate enhancement suggestions');
+      }
+
+      const suggestions = JSON.parse(toolCall.function.arguments);
+      
+      return new Response(
+        JSON.stringify(suggestions),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
