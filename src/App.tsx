@@ -8,6 +8,7 @@ import Suggestions from "./pages/Suggestions";
 import Instructions from "./pages/Instructions";
 import Ingredients from "./pages/Ingredients";
 import Recreate from "./pages/Recreate";
+import Enhance from "./pages/Enhance";
 import Planning from "./pages/Planning";
 import DietGuide from "./pages/DietGuide";
 import NotFound from "./pages/NotFound";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/ingredients" element={<Ingredients />} />
           <Route path="/recreate" element={<Recreate />} />
+          <Route path="/enhance" element={<Enhance />} />
           <Route path="/planning" element={<Planning />} />
           <Route path="/diet" element={<DietGuide />} />
           <Route path="*" element={<NotFound />} />

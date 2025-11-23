@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
-import { ChefHat, Lightbulb, Camera, Target, Calendar, Apple } from "lucide-react";
+import { ChefHat, Lightbulb, Camera, Target, Calendar, Apple, Sparkles } from "lucide-react";
 import heroImage from "@/assets/hero-cooking.jpg";
 
 const Index = () => {
@@ -25,11 +25,19 @@ const Index = () => {
       route: "/instructions",
     },
     {
+      id: "enhance",
+      title: "Enhance Your Dish",
+      description: "Get smart suggestions to improve what you're making",
+      icon: Sparkles,
+      color: "accent",
+      route: "/enhance",
+    },
+    {
       id: "suggestions",
       title: "Meal Suggestions",
       description: "Get inspired with personalized meal ideas",
       icon: Lightbulb,
-      color: "accent",
+      color: "primary",
       route: "/suggestions",
     },
     {
