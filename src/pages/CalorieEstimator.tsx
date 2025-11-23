@@ -82,7 +82,7 @@ const CalorieEstimator = () => {
                 What did you eat?
               </label>
               <Textarea
-                placeholder="E.g., 'I had a cheeseburger' or 'I made a cheeseburger from one Bubba Burger patty, one slice of Publix brand American cheese, and one Publix brand cheeseburger bun'"
+                placeholder="E.g., 'I had a cheeseburger' or 'I made a cheeseburger with one 1/4 lb ground beef patty, one slice of Kraft American cheese, and one Wonder Bread hamburger bun'"
                 value={foodInput}
                 onChange={(e) => setFoodInput(e.target.value)}
                 className="min-h-[120px]"
