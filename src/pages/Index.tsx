@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { ChefHat, Lightbulb, Camera, Target, Calendar, Apple, Sparkles, Salad, Calculator } from "lucide-react";
+import LazyImage from "@/components/LazyImage";
 import heroImage from "@/assets/hero-cooking.jpg";
 
 const Index = () => {
@@ -86,9 +87,9 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-hero">
       {/* Hero Section */}
       <div className="relative h-[250px] md:h-[300px] overflow-hidden">
-        <img 
-          src={heroImage} 
-          alt="Fresh cooking ingredients" 
+        <LazyImage
+          src={heroImage}
+          alt="Fresh cooking ingredients"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80" />

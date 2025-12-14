@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Capacitor / Mobile
+ios/App/build/
+ios/App/Pods/
+ios/App/public/
+ios/App/Podfile.lock
+android/app/build/
+android/app/public/
+android/.gradle/
+android/build/
+android/local.properties
+*.orig
+.DS_Store
+
+# Environment files (keep .env.production in repo but add .env.local if needed)
+.env.local
