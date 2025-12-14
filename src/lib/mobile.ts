@@ -257,7 +257,9 @@ export const network = {
       };
     }
 
-    const listener = Network.addListener('networkStatusChange', callback);
-    return () => listener.remove();
+    const listenerPromise = Network.addListener('networkStatusChange', callback);
+    return () => {
+      listenerPromise.then(handle => handle.remove());
+    };
   },
 };

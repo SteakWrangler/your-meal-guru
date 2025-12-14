@@ -17,6 +17,7 @@ const Instructions = () => {
   const [dishName, setDishName] = useState("");
   const [loading, setLoading] = useState(false);
   const [recipe, setRecipe] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState("standard");
 
   useEffect(() => {
     // Check if a recipe was passed from Recreate page
@@ -114,7 +115,7 @@ const Instructions = () => {
           <Card className="p-4 md:p-8">
             <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{recipe.title || dishName}</h2>
             
-            <Tabs defaultValue="standard" className="w-full">
+            <Tabs defaultValue="standard" className="w-full" onValueChange={(v) => setActiveTab(v)}>
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="standard">Standard</TabsTrigger>
                 <TabsTrigger value="fromScratch">From Scratch</TabsTrigger>
@@ -230,7 +231,7 @@ const Instructions = () => {
             <div className="flex gap-2">
               <ShareButton
                 title={`${dishName} Recipe`}
-                text={`Check out this ${version === "fromScratch" ? "from-scratch" : ""} recipe for ${dishName}!`}
+                text={`Check out this ${activeTab === "fromScratch" ? "from-scratch" : ""} recipe for ${dishName}!`}
               />
               <PrintButton />
             </div>
