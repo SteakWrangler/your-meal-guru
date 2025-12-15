@@ -70,9 +70,9 @@ const Instructions = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-4 sm:py-6 md:py-8 max-w-4xl">
         {/* Header */}
-        <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8">
           <Button
             variant="ghost"
             size="icon"
@@ -82,27 +82,27 @@ const Instructions = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Recipe Instructions</h1>
-            <p className="text-sm md:text-base text-muted-foreground">Get step-by-step cooking guides</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Recipe Instructions</h1>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">Get step-by-step cooking guides</p>
           </div>
         </div>
 
         {/* Search Section */}
-        <Card className="p-4 md:p-6 mb-6 md:mb-8">
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4">
+        <Card className="p-3 sm:p-4 md:p-6 mb-4 sm:mb-6 md:mb-8">
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
             <Input
               placeholder="Enter dish name (e.g., Spaghetti Carbonara)"
               value={dishName}
               onChange={(e) => setDishName(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && getRecipe()}
-              className="flex-1"
+              onKeyDown={(e) => e.key === "Enter" && getRecipe()}
+              className="flex-1 text-sm sm:text-base"
             />
             <Button onClick={() => getRecipe()} disabled={loading} className="w-full sm:w-auto">
               {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
               ) : (
                 <>
-                  <ChefHat className="w-5 h-5 mr-2" />
+                  <ChefHat className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Get Recipe
                 </>
               )}
@@ -112,24 +112,24 @@ const Instructions = () => {
 
         {/* Recipe Display */}
         {recipe && (
-          <Card className="p-4 md:p-8">
-            <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">{recipe.title || dishName}</h2>
-            
+          <Card className="p-4 sm:p-6 md:p-8">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-3 sm:mb-4 md:mb-6">{recipe.title || dishName}</h2>
+
             <Tabs defaultValue="standard" className="w-full" onValueChange={(v) => setActiveTab(v)}>
-              <TabsList className="grid w-full grid-cols-2 mb-6">
-                <TabsTrigger value="standard">Standard</TabsTrigger>
-                <TabsTrigger value="fromScratch">From Scratch</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 mb-4 sm:mb-6">
+                <TabsTrigger value="standard" className="text-xs sm:text-sm">Standard</TabsTrigger>
+                <TabsTrigger value="fromScratch" className="text-xs sm:text-sm">From Scratch</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="standard" className="space-y-6">
+              <TabsContent value="standard" className="space-y-4 sm:space-y-6">
                 {recipe.standard?.ingredients && (
                   <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
-                    <ul className="space-y-2">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3">Ingredients</h3>
+                    <ul className="space-y-1.5 sm:space-y-2">
                       {recipe.standard.ingredients.map((ingredient: string, index: number) => (
                         <li key={index} className="flex items-start gap-2">
                           <span className="text-primary mt-1">•</span>
-                          <span className="text-sm md:text-base">{ingredient}</span>
+                          <span className="text-sm md:text-base break-words">{ingredient}</span>
                         </li>
                       ))}
                     </ul>
@@ -138,14 +138,14 @@ const Instructions = () => {
 
                 {recipe.standard?.steps && (
                   <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
-                    <ol className="space-y-3 md:space-y-4">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3">Instructions</h3>
+                    <ol className="space-y-2 sm:space-y-3 md:space-y-4">
                       {recipe.standard.steps.map((step: string, index: number) => (
-                        <li key={index} className="flex gap-3 md:gap-4">
-                          <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
+                        <li key={index} className="flex gap-2 sm:gap-3 md:gap-4">
+                          <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-xs sm:text-sm md:text-base">
                             {index + 1}
                           </span>
-                          <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
+                          <p className="pt-0.5 md:pt-1 text-sm md:text-base break-words">{step}</p>
                         </li>
                       ))}
                     </ol>
@@ -154,32 +154,32 @@ const Instructions = () => {
 
                 {recipe.standard?.tips && (
                   <div className="p-3 md:p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">{recipe.standard.tips}</p>
+                    <h4 className="font-semibold mb-1.5 sm:mb-2 text-sm md:text-base">Pro Tips</h4>
+                    <p className="text-xs md:text-sm text-muted-foreground break-words">{recipe.standard.tips}</p>
                   </div>
                 )}
               </TabsContent>
 
-              <TabsContent value="fromScratch" className="space-y-6">
+              <TabsContent value="fromScratch" className="space-y-4 sm:space-y-6">
                 {recipe.fromScratch?.ingredients && (
                   <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-3">Ingredients</h3>
-                    <ul className="space-y-2">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3">Ingredients</h3>
+                    <ul className="space-y-1.5 sm:space-y-2">
                       {recipe.fromScratch.ingredients.map((ingredient: string, index: number) => {
                         const isSubsection = /^(for the|for|to make)/i.test(ingredient.trim());
-                        
+
                         if (isSubsection) {
                           return (
-                            <li key={index} className="pt-3 first:pt-0">
-                              <h4 className="text-base md:text-lg font-bold text-primary mb-1">{ingredient}</h4>
+                            <li key={index} className="pt-2 sm:pt-3 first:pt-0">
+                              <h4 className="text-sm sm:text-base md:text-lg font-bold text-primary mb-1 break-words">{ingredient}</h4>
                             </li>
                           );
                         }
-                        
+
                         return (
                           <li key={index} className="flex items-start gap-2 ml-0">
                             <span className="text-primary mt-1">•</span>
-                            <span className="text-sm md:text-base">{ingredient}</span>
+                            <span className="text-sm md:text-base break-words">{ingredient}</span>
                           </li>
                         );
                       })}
@@ -189,25 +189,25 @@ const Instructions = () => {
 
                 {recipe.fromScratch?.steps && (
                   <div>
-                    <h3 className="text-lg md:text-xl font-semibold mb-3">Instructions</h3>
-                    <ol className="space-y-3 md:space-y-4">
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-2 sm:mb-3">Instructions</h3>
+                    <ol className="space-y-2 sm:space-y-3 md:space-y-4">
                       {recipe.fromScratch.steps.map((step: string, index: number) => {
                         const isSubsection = /^(for the|for|to make|making the)/i.test(step.trim());
-                        
+
                         if (isSubsection) {
                           return (
-                            <li key={index} className="pt-3 first:pt-0 list-none">
-                              <h4 className="text-base md:text-lg font-bold text-primary mb-2">{step}</h4>
+                            <li key={index} className="pt-2 sm:pt-3 first:pt-0 list-none">
+                              <h4 className="text-sm sm:text-base md:text-lg font-bold text-primary mb-1.5 sm:mb-2 break-words">{step}</h4>
                             </li>
                           );
                         }
-                        
+
                         return (
-                          <li key={index} className="flex gap-3 md:gap-4">
-                            <span className="flex-shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-sm md:text-base">
+                          <li key={index} className="flex gap-2 sm:gap-3 md:gap-4">
+                            <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-semibold text-xs sm:text-sm md:text-base">
                               {index + 1}
                             </span>
-                            <p className="pt-0.5 md:pt-1 text-sm md:text-base">{step}</p>
+                            <p className="pt-0.5 md:pt-1 text-sm md:text-base break-words">{step}</p>
                           </li>
                         );
                       })}
@@ -217,8 +217,8 @@ const Instructions = () => {
 
                 {recipe.fromScratch?.tips && (
                   <div className="p-3 md:p-4 bg-muted rounded-lg">
-                    <h4 className="font-semibold mb-2 text-sm md:text-base">Pro Tips</h4>
-                    <p className="text-xs md:text-sm text-muted-foreground">{recipe.fromScratch.tips}</p>
+                    <h4 className="font-semibold mb-1.5 sm:mb-2 text-sm md:text-base">Pro Tips</h4>
+                    <p className="text-xs md:text-sm text-muted-foreground break-words">{recipe.fromScratch.tips}</p>
                   </div>
                 )}
               </TabsContent>

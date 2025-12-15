@@ -72,9 +72,9 @@ const Planning = () => {
 
   return (
     <div className="min-h-screen bg-gradient-hero">
-      <div className="container mx-auto px-4 py-6 md:py-8 max-w-6xl">
+      <div className="container mx-auto px-4 py-4 sm:py-6 md:py-8 max-w-6xl">
         {/* Header */}
-        <div className="flex items-center gap-3 md:gap-4 mb-6 md:mb-8">
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8">
           <Button
             variant="ghost"
             size="icon"
@@ -84,23 +84,23 @@ const Planning = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold">Meal Planning</h1>
-            <p className="text-sm md:text-base text-muted-foreground">Plan your week ahead</p>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold">Meal Planning</h1>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">Plan your week ahead</p>
           </div>
         </div>
 
         {/* Input Form */}
         {!mealPlan && (
-          <Card className="p-6 md:p-8 mb-6 md:mb-8">
-            <Sparkles className="w-10 h-10 md:w-12 md:h-12 mx-auto mb-3 md:mb-4 text-primary" />
-            <h2 className="text-xl md:text-2xl font-semibold mb-2 text-center">AI Meal Prep Assistant</h2>
-            <p className="text-sm md:text-base text-muted-foreground mb-4 md:mb-6 text-center">
+          <Card className="p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 md:mb-8">
+            <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 mx-auto mb-2 sm:mb-3 md:mb-4 text-primary" />
+            <h2 className="text-lg sm:text-xl md:text-2xl font-semibold mb-1.5 sm:mb-2 text-center">AI Meal Prep Assistant</h2>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground mb-3 sm:mb-4 md:mb-6 text-center">
               Tell us your preferences and we'll create a personalized weekly meal plan
             </p>
-            
-            <div className="space-y-3 md:space-y-4 max-w-2xl mx-auto">
+
+            <div className="space-y-2.5 sm:space-y-3 md:space-y-4 max-w-2xl mx-auto">
               <div>
-                <label className="block text-sm md:text-base font-medium mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium mb-1.5 sm:mb-2">
                   Number of People
                 </label>
                 <Input
@@ -109,49 +109,49 @@ const Planning = () => {
                   value={numberOfPeople}
                   onChange={(e) => setNumberOfPeople(e.target.value)}
                   placeholder="2"
-                  className="text-base"
+                  className="text-sm sm:text-base"
                 />
               </div>
 
               <div>
-                <label className="block text-sm md:text-base font-medium mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium mb-1.5 sm:mb-2">
                   Dietary Restrictions (Optional)
                 </label>
                 <Input
                   value={dietaryRestrictions}
                   onChange={(e) => setDietaryRestrictions(e.target.value)}
                   placeholder="e.g., vegetarian, gluten-free, no dairy"
-                  className="text-base"
+                  className="text-sm sm:text-base"
                 />
               </div>
 
               <div>
-                <label className="block text-sm md:text-base font-medium mb-2">
+                <label className="block text-xs sm:text-sm md:text-base font-medium mb-1.5 sm:mb-2">
                   Goals & Preferences
                 </label>
                 <Textarea
                   value={preferences}
                   onChange={(e) => setPreferences(e.target.value)}
                   placeholder="e.g., healthy meals, quick recipes, budget-friendly, high protein, meal variety..."
-                  className="min-h-[100px] text-base"
+                  className="min-h-[80px] sm:min-h-[100px] md:min-h-[120px] text-sm sm:text-base resize-none"
                 />
               </div>
 
-              <Button 
-                onClick={generateMealPlan} 
+              <Button
+                onClick={generateMealPlan}
                 disabled={loading}
                 className="w-full"
                 size="lg"
               >
                 {loading ? (
                   <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Generating Your Meal Plan...
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
+                    <span className="text-sm sm:text-base">Generating Your Meal Plan...</span>
                   </>
                 ) : (
                   <>
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Generate Weekly Meal Plan
+                    <Calendar className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                    <span className="text-sm sm:text-base">Generate Weekly Meal Plan</span>
                   </>
                 )}
               </Button>
@@ -162,10 +162,10 @@ const Planning = () => {
         {/* Weekly Planner */}
         {mealPlan && (
           <>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 md:mb-6">
-              <h2 className="text-xl md:text-2xl font-bold">Your Weekly Meal Plan</h2>
-              <Button 
-                variant="outline" 
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6">
+              <h2 className="text-lg sm:text-xl md:text-2xl font-bold">Your Weekly Meal Plan</h2>
+              <Button
+                variant="outline"
                 onClick={() => setMealPlan(null)}
                 className="w-full sm:w-auto"
                 size="sm"
@@ -173,40 +173,40 @@ const Planning = () => {
                 Create New Plan
               </Button>
             </div>
-            <div className="grid gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-2.5 sm:gap-3 md:gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {daysOfWeek.map((day) => (
-                <Card key={day} className="p-4 md:p-6">
-                  <div className="flex items-center justify-between mb-3 md:mb-4">
-                    <h3 className="text-base md:text-lg font-semibold">{day}</h3>
-                    <Calendar className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
+                <Card key={day} className="p-3 sm:p-4 md:p-6">
+                  <div className="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+                    <h3 className="text-sm sm:text-base md:text-lg font-semibold">{day}</h3>
+                    <Calendar className="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5 text-muted-foreground" />
                   </div>
-                  
+
                   {mealPlan[day] && (
-                    <div className="space-y-2 md:space-y-3">
-                      <div className="p-2.5 md:p-3 bg-muted rounded-lg">
-                        <p className="text-xs md:text-sm font-medium text-muted-foreground mb-1">Breakfast</p>
-                        <p 
-                          className="text-xs md:text-sm cursor-pointer hover:text-primary transition-colors line-clamp-2"
+                    <div className="space-y-1.5 sm:space-y-2 md:space-y-3">
+                      <div className="p-2 sm:p-2.5 md:p-3 bg-muted rounded-lg">
+                        <p className="text-xs md:text-sm font-medium text-muted-foreground mb-0.5 sm:mb-1">Breakfast</p>
+                        <p
+                          className="text-xs sm:text-xs md:text-sm cursor-pointer hover:text-primary transition-colors line-clamp-2 break-words"
                           onClick={() => handleMealClick(mealPlan[day].breakfast)}
                         >
                           {mealPlan[day].breakfast}
                         </p>
                       </div>
 
-                      <div className="p-2.5 md:p-3 bg-muted rounded-lg">
-                        <p className="text-xs md:text-sm font-medium text-muted-foreground mb-1">Lunch</p>
-                        <p 
-                          className="text-xs md:text-sm cursor-pointer hover:text-primary transition-colors line-clamp-2"
+                      <div className="p-2 sm:p-2.5 md:p-3 bg-muted rounded-lg">
+                        <p className="text-xs md:text-sm font-medium text-muted-foreground mb-0.5 sm:mb-1">Lunch</p>
+                        <p
+                          className="text-xs sm:text-xs md:text-sm cursor-pointer hover:text-primary transition-colors line-clamp-2 break-words"
                           onClick={() => handleMealClick(mealPlan[day].lunch)}
                         >
                           {mealPlan[day].lunch}
                         </p>
                       </div>
 
-                      <div className="p-2.5 md:p-3 bg-muted rounded-lg">
-                        <p className="text-xs md:text-sm font-medium text-muted-foreground mb-1">Dinner</p>
-                        <p 
-                          className="text-xs md:text-sm cursor-pointer hover:text-primary transition-colors line-clamp-2"
+                      <div className="p-2 sm:p-2.5 md:p-3 bg-muted rounded-lg">
+                        <p className="text-xs md:text-sm font-medium text-muted-foreground mb-0.5 sm:mb-1">Dinner</p>
+                        <p
+                          className="text-xs sm:text-xs md:text-sm cursor-pointer hover:text-primary transition-colors line-clamp-2 break-words"
                           onClick={() => handleMealClick(mealPlan[day].dinner)}
                         >
                           {mealPlan[day].dinner}
