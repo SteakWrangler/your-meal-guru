@@ -53,7 +53,8 @@ Kitchen Companion is ready for testing and nearly ready for app store submission
 
 **App Configuration:**
 - App ID: com.yourmealguru.app
-- App Name: Kitchen Companion
+- App Name: Your Meal Guru
+- App SKU: YMG-001
 - iOS Min Version: 13.0+
 - Android Min SDK: 23 (Android 6.0+)
 

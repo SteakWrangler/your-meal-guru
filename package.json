@@ -1,7 +1,8 @@
 {
-  "name": "vite_react_shadcn_ts",
+  "name": "your-meal-guru",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Your complete AI-powered cooking companion with recipe suggestions, step-by-step instructions, meal planning, and ingredient-based recipe discovery",
   "type": "module",
   "scripts": {
     "dev": "vite",
