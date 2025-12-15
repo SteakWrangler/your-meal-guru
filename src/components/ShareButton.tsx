@@ -13,8 +13,8 @@ interface ShareButtonProps {
 export function ShareButton({ title, text, url }: ShareButtonProps) {
   const handleShare = async () => {
     const result = await share.content({
-      title: title || "Kitchen Companion",
-      text: text || "Check out this recipe from Kitchen Companion!",
+      title: title || "Your Meal Guru",
+      text: text || "Check out this recipe from Your Meal Guru!",
       url: url || window.location.href,
       dialogTitle: "Share Recipe",
     });
@@ -24,7 +24,7 @@ export function ShareButton({ title, text, url }: ShareButtonProps) {
     } else {
       // Fallback: copy to clipboard
       try {
-        const shareText = `${title || "Kitchen Companion"}\n\n${text || ""}\n\n${url || window.location.href}`;
+        const shareText = `${title || "Your Meal Guru"}\n\n${text || ""}\n\n${url || window.location.href}`;
         await navigator.clipboard.writeText(shareText);
         toast.success("Copied to clipboard!");
         haptics.success();

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Kitchen Companion</string>
-    <string name="title_activity_main">Kitchen Companion</string>
+    <string name="app_name">Your Meal Guru</string>
+    <string name="title_activity_main">Your Meal Guru</string>
     <string name="package_name">com.yourmealguru.app</string>
     <string name="custom_url_scheme">com.yourmealguru.app</string>
 </resources>

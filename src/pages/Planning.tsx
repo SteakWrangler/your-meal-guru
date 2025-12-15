@@ -225,7 +225,7 @@ const Planning = () => {
             <div className="flex gap-2">
               <ShareButton
                 title="My Weekly Meal Plan"
-                text="Check out my meal plan from Kitchen Companion!"
+                text="Check out my meal plan from Your Meal Guru!"
               />
               <PrintButton />
             </div>

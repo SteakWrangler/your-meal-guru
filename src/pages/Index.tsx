@@ -95,7 +95,7 @@ const Index = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
           <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground mb-2 md:mb-3 drop-shadow-lg">
-            Your Kitchen Companion
+            Your Meal Guru
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-foreground/90 max-w-2xl drop-shadow">
             From ingredients to table - AI-powered cooking made simple

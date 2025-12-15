@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Kitchen Companion</string>
+        <string>Your Meal Guru</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -46,10 +46,10 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Kitchen Companion needs camera access to scan ingredients from photos</string>
+	<string>Your Meal Guru needs camera access to scan ingredients from photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Kitchen Companion needs photo library access to select ingredient images</string>
+	<string>Your Meal Guru needs photo library access to select ingredient images</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Kitchen Companion needs permission to save photos to your library</string>
+	<string>Your Meal Guru needs permission to save photos to your library</string>
 </dict>
 </plist>
