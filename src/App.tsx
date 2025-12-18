@@ -22,6 +22,8 @@ const Planning = lazy(() => import("./pages/Planning"));
 const DietGuide = lazy(() => import("./pages/DietGuide"));
 const NutritionAnalysis = lazy(() => import("./pages/NutritionAnalysis"));
 const CalorieEstimator = lazy(() => import("./pages/CalorieEstimator"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Support = lazy(() => import("./pages/Support"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -48,6 +50,8 @@ const AppContent = () => {
           <Route path="/diet" element={<DietGuide />} />
           <Route path="/nutrition-analysis" element={<NutritionAnalysis />} />
           <Route path="/calorie-estimator" element={<CalorieEstimator />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/support" element={<Support />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
