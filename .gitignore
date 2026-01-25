@@ -36,5 +36,12 @@ android/local.properties
 *.orig
 .DS_Store
 
-# Environment files (keep .env.production in repo but add .env.local if needed)
+# Environment files
+.env
 .env.local
+.env.production
+.env*.local
+
+# Editor/AI settings (local only)
+.claude/
+.cursor/

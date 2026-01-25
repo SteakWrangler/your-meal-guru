@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+# Your Meal Guru
 
-## Project info
+A full-stack AI-powered cooking companion application built for iOS, Android, and web. The app helps users discover recipes, plan meals, track nutrition, and get step-by-step cooking guidance.
 
-**URL**: https://lovable.dev/projects/04bc801c-cccd-413b-a031-52ed9d9fb18c
+## Features
 
-## How can I edit this code?
+- **AI Recipe Suggestions** - Get personalized recipe recommendations based on preferences and dietary needs
+- **Step-by-Step Instructions** - Guided cooking experience with clear, detailed instructions
+- **Meal Planning** - Plan meals ahead and organize your weekly menu
+- **Ingredient-Based Search** - Find recipes based on ingredients you have available
+- **Calorie Estimation** - Track nutritional information for your meals
+- **Diet Guide** - Get guidance tailored to specific dietary requirements
+- **Recipe Enhancement** - Suggestions to improve and customize recipes
+- **Recipe Recreation** - Recreate dishes from photos or descriptions
+- **Nutrition Analysis** - Detailed nutritional breakdown of meals
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **Tailwind CSS** for styling
+- **Radix UI** + **shadcn/ui** for accessible component primitives
+- **TanStack React Query** for data fetching and caching
+- **React Router** for navigation
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/04bc801c-cccd-413b-a031-52ed9d9fb18c) and start prompting.
+### Mobile
+- **Capacitor** for native iOS and Android deployment
+- Native camera integration
+- Haptic feedback
+- Native sharing capabilities
+- PWA support with offline functionality
 
-Changes made via Lovable will be committed automatically to this repo.
+### Backend
+- **Supabase** (PostgreSQL + Edge Functions)
+- Real-time data synchronization
+- Secure authentication
 
-**Use your preferred IDE**
+## Architecture Highlights
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- **Performance optimized** - Code splitting with manual chunk configuration for optimal loading
+- **Offline-first** - Service worker with intelligent caching strategies
+- **Mobile-native** - Safe area handling, platform-specific UI adaptations
+- **Accessible** - Built on Radix UI primitives for WCAG compliance
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Screenshots
 
-Follow these steps:
+*Coming soon*
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## License
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/04bc801c-cccd-413b-a031-52ed9d9fb18c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+All rights reserved.
