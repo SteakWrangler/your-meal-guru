@@ -36,10 +36,8 @@ android/local.properties
 *.orig
 .DS_Store
 
-# Environment files
-.env
+# Environment files (local overrides only)
 .env.local
-.env.production
 .env*.local
 
 # Editor/AI settings (local only)
